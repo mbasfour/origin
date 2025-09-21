@@ -1,0 +1,67 @@
+1. Server Deployment and Setup Automation
+
+- Provision a Linux server with the right operating system and the most important software packages (PHP, database server, web server, Node.js for frontend builds, etc.).
+
+- Transfer the application files to the server and run the frontend build process.
+
+- Use Composer to install all PHP dependencies.
+
+- Configure the database by creating users, establishing permissions, and running migrations/seeders to create the required tables and default records.
+
+- Configure the application's database connection via environment settings.
+
+- Automate the entire setup and deployment process via GitHub Actions (CI/CD pipelines). That way, every approved and tested pull request triggers an automated build, test, and deploy process, reducing human effort and making it more reliable.
+
+2. Continuous Integration & Continuous Deployment (CI/CD)
+
+- Utilize GitHub Actions workflows to deploy code updates automatically on the server whenever new commits are submitted, tested, and approved.
+
+- Integrate unit tests, integration tests, and static code tools (e.g., PHPStan, Pest, PHPUnit) into the CI pipeline to ensure code quality before deployment.
+
+- Deploy updates with zero downtime (e.g., with Laravel Envoyer, GitHub Actions w/ rsync, or containerized solutions such as Docker + Kubernetes).
+
+3. Database Optimization and Performance Improvements
+
+- Ensure that foreign key columns and fields used in WHERE, JOIN, and ORDER BY clauses are properly indexed to optimize queries.
+
+- Use caching levels such as Redis to store results of frequently accessed queries, Laravel responses, or session data.
+
+- Use eager loading for Eloquent ORM to avoid the N+1 query problem.
+
+- Periodically examine query execution plans and if scaling is required, use database sharding, read replicas, or connection pooling.
+
+4. Security and Infrastructure Hardening
+
+- Use Let's Encrypt (or another trusted Certificate Authority) to automatically obtain and renew SSL/TLS certificates for secure HTTPS connections.
+
+- Ensure sensitive files such as .env are not versioned (.gitignore) to ensure application secrets and API keys remain secure.
+
+- Install firewalls:
+
+- On-premises servers use iptables or ufw.
+
+- On cloud providers like AWS, use security groups or network ACLs.
+
+- Optional addition of a third-party firewall or Web Application Firewall (WAF) (e.g., Cloudflare, AWS WAF, or server-level tools such as ModSecurity).
+
+- Keep server packages current and have services and users implement least privilege access.
+
+- Implement automated backups using the Spatie Laravel Backup package to regularly back up the application files, databases, and storage.
+
+- Configure the package to store backups in a secure cloud provider (e.g., AWS S3, Google Cloud Storage, Azure Blob Storage, or DigitalOcean Spaces).
+
+- Enable encryption for all backups to ensure data security and compliance with best practices.
+
+- Define a retention policy to automatically prune old backups while keeping recent and critical ones available.
+
+- Regularly test the backup restoration process to guarantee that disaster recovery is quick and reliable in case of server failure, data corruption, or accidental deletion.
+
+5. Application Monitoring and Observability
+
+- Use Laravel Pulse to monitor performance metrics, slow queries, and real-time information on application behavior.
+
+- Use Laravel Nightwatch (or Laravel Dusk for browser testing) to monitor important user flows and check whether frontend features are correct after deployments.
+
+- Use application monitoring tools like New Relic, Datadog, or Laravel Telescope to debug and monitor performance in detail.
+
+- Set up logging and alert pipelines (e.g., via Slack, Email, or Opsgenie) for reporting error and detecting anomalies.
