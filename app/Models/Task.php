@@ -16,6 +16,17 @@ class Task extends Model
         'due_date' => 'date',
     ];
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+    protected $fillable = [
+        'title',
+        'status',
+        'due_date'
+    ];
+
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
