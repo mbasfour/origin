@@ -11,10 +11,10 @@ class ProjectForm extends Form
 {
     public ?int $id = null;
 
-    # [Validate(required|string|max:255)]
+    #[Validate('required|string|max:255')]
     public string $name = '';
     
-    # [Validate(nullable|string)]
+    #[Validate('nullable|string')]
     public string $description = '';
 
     protected ProjectService $service;
@@ -34,6 +34,8 @@ class ProjectForm extends Form
     }
 
     public function save(): Project {
+        $this->validate();
+        
         if(!$this->id) {
             return $this->service->create([
                 'name' => $this->name,

@@ -28,18 +28,18 @@
                     <div class="flex items-center gap-2">
                         <flux:modal.trigger name="task-form-modal">
                             <flux:button variant="primary" color="green" type="button" size="xs" icon="plus"
-                                wire:click="$dispatch('addTask', { 'project': {{ $project }} })">
+                                wire:click="$dispatch('addTask', { 'project_id': {{ $project->id }} })">
                                 {{__('Add Task')}}
                             </flux:button>
                         </flux:modal.trigger>
 
                         <flux:button variant="primary" color="blue" type="button" size="xs" icon="pencil"
-                            wire:click="$dispatch('editProject', { 'project': {{ $project }} })">
+                            wire:click="$dispatch('editProject', { 'project_id': {{ $project->id }} })">
                             {{__('Edit')}}
                         </flux:button>
 
                         <flux:button variant="primary" color="red" type="button" size="xs" icon="trash"
-                            wire:click="deleteProject({{ $project }})">
+                            wire:click="deleteProject({{ $project->id }})">
                             {{__('Delete')}}
                         </flux:button>
 
@@ -83,12 +83,12 @@
                                         <td class="px-2 py-1">
                                             <div class="flex items-center gap-2">
                                                 <flux:button variant="primary" color="blue" type="button" size="xs" icon="pencil"
-                                                    wire:click="$dispatch('editTask', { 'task': {{ $task }} })">
+                                                    wire:click="$dispatch('editTask', { 'task_id': {{ $task->id }} })">
                                                     {{__('Edit')}}
                                                 </flux:button>
 
                                                 <flux:button variant="primary" color="red" type="button" size="xs" icon="trash"
-                                                    wire:click="deleteTask({{ $task }})">
+                                                    wire:click="deleteTask({{ $task->id }})">
                                                     {{__('Delete')}}
                                                 </flux:button>
                                             </div>

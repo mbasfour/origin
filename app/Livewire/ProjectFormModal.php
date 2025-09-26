@@ -2,11 +2,16 @@
 
 namespace App\Livewire;
 
+use Exception;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Auth\Access\AuthorizationException;
 use Livewire\Component;
+use Masmerise\Toaster\Toaster;
+use Flux\Flux;
 use App\Livewire\Forms\ProjectForm;
 use App\Models\Project;
-use Flux\Flux;
+
 
 class ProjectFormModal extends Component
 {
@@ -31,32 +36,51 @@ class ProjectFormModal extends Component
         $this->form->reset();
     }
 
-    public function onEditProject(Project $project): void
+    public function onEditProject(int $project_id): void
     {
-        if (!empty($project->id)) {
-            $this->form->setProject($project);
+        try {
+            $this->form->setProject(Project::findOrFail($project_id));
+
             Flux::modal('project-form-modal')->show();
-        } else {
-            $this->form->reset();
+        } catch (Exception $e) {
+            Toaster::error('An error occurred while loading the project: ' . $e->getMessage());
         }
+
     }
 
     public function save(): void
     {
-        if($this->form->id) {
-            $project = Project::findOrFail($this->form->id);
-            $this->authorize('update', $project);
+        try {
+            if($this->form->id) {
+                $project = Project::findOrFail($this->form->id);
+                
+                $this->authorize('update', $project);
+            }
+            
+            $this->form->save();
+
+            if (!$this->form->id) {
+                $this->form->reset();
+            }
+
+            Flux::modal('project-form-modal')->close();
+
+            Toaster::success('Project saved successfully');
+
+            $this->dispatch('projectSaved');
+        } catch (ValidationException $e) {
+            Toaster::error('Please correct the errors in the form.');
+
+            throw $e;
+        } catch (AuthorizationException $e) {
+            Flux::modal('project-form-modal')->close();
+
+            Toaster::error('You are not authorized to perform this action.');
+        } catch (Exception $e) {
+            Flux::modal('project-form-modal')->close();
+
+            Toaster::error('An error occurred while saving the project: ' . $e->getMessage());
         }
-        
-        $this->form->save();
-
-        if (!$this->form->id) {
-            $this->form->reset();
-        }
-
-        Flux::modal('project-form-modal')->close();
-
-        $this->dispatch('projectSaved');
     }
 
     public function render()

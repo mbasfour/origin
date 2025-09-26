@@ -12,13 +12,13 @@ class TaskForm extends Form
 {
     public ?int $id = null;
 
-    # [Validate(required|string|max:255)]
+    #[Validate('required|string|max:255')]
     public string $title = '';
 
-    # [Validate(required|in:todo,in_progress,done)]
+    #[Validate('required|in:todo,in_progress,done')]
     public string $status = 'todo';
 
-    # [Validate(nullable|date)]
+    #[Validate('nullable|date')]
     public string $due_date = '';
 
     # [Validate(required|integer|exists:projects,id)]
@@ -37,12 +37,14 @@ class TaskForm extends Form
             $this->id = $task->id;
             $this->title = $task->title;
             $this->status = $task->status;
-            $this->due_date = $task->due_date;
+            $this->due_date = $task->due_date->format('Y-m-d');
             $this->project_id = $task->project_id;
         }
     }
 
     public function save(): Task {
+        $this->validate();
+        
         if(!$this->id) {
             $project = Project::findOrFail($this->project_id);
 

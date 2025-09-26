@@ -2,11 +2,14 @@
 
 namespace App\Livewire;
 
+use Exception;
 use Illuminate\View\View;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Auth\Access\AuthorizationException;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Masmerise\Toaster\Toaster;
 use App\Services\ProjectService;
 use App\Services\TaskService;
 use App\Models\Project;
@@ -41,22 +44,42 @@ class ProjectsList extends Component
         //$this->projects = $this->projectService->byUserPaginate(auth()->user()->id);
     }
 
-    public function deleteProject(Project $project): void
+    public function deleteProject(int $project_id): void
     {
-        $this->authorize('delete', $project);
+        try {
+            $project = Project::findOrFail($project_id);
 
-        $this->projectService->delete($project);
+            $this->authorize('delete', $project);
 
-        $this->loadProjects();
+            $this->projectService->delete($project);
+
+            Toaster::success('Project deleted successfully.');
+
+            $this->loadProjects();
+        } catch (AuthorizationException $e) {
+            Toaster::error('You are not authorized to perform this action.');
+        } catch (Exception $e) {
+            Toaster::error('An error occurred while deleting the project: ' . $e->getMessage());
+        }
     }
 
-    public function deleteTask(Task $task): void
+    public function deleteTask(int $task_id): void
     {
-        $this->authorize('delete', $task);
+        try {
+            $task = Task::findOrFail($task_id);
+            
+            $this->authorize('delete', $task);
 
-        $this->taskService->delete($task);
+            $this->taskService->delete($task);
 
-        $this->loadProjects();
+            Toaster::success('Task deleted successfully');
+
+            $this->loadProjects();
+        } catch (AuthorizationException $e) {
+            Toaster::error('You are not authorized to perform this action.');
+        } catch (Exception $e) {
+            Toaster::error('An error occurred while deleting the task: ' . $e->getMessage());
+        }
     }
 
     public function render(): View
